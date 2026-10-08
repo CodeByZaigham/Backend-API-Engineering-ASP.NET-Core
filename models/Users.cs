@@ -8,7 +8,8 @@ namespace shopforge_backend.models
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public String? Name { get; set; }
-        public String? Email { get; set; }
+        required public String Email { get; set; }
+        required public String Password {get; set;}
         public String? Phone { get; set; }
         public String? Gender { get; set; }
         public Role Role { get; set; }

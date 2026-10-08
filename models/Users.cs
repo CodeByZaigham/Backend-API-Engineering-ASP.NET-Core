@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 
-namespace WebApplication1.models
+namespace shopforge_backend.models
 {
     public class Users
     {

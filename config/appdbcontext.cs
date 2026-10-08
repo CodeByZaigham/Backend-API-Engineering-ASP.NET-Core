@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using WebApplication1.models;
+using shopforge_backend.models;
 
-namespace WebApplication1.config
+namespace shopforge_backend.config
 {
     public class appdbcontext : DbContext
     {

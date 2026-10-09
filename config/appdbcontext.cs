@@ -19,6 +19,8 @@ namespace shopforge_backend.config
 
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Product> Products { get; set; }
     }
 }
 

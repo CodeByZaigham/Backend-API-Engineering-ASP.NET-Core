@@ -17,10 +17,19 @@ namespace shopforge_backend.controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(userdto dto)
         {
-            var Result=await _authservice.LoginUser(dto);
-            if (Result.Item1 == 0){return NotFound(Result.Item2);}
-            if (Result.Item1 == 0){return BadRequest(Result.Item2);}
-            return Ok(Result.Item2); 
+            try
+            {
+                var Result=await _authservice.LoginUser(dto);
+                if (Result.Item1 == 1){return NotFound(Result.Item2);}
+                if (Result.Item1 == 0){return BadRequest(Result.Item2);}
+                return Ok(Result.Item2);
+
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            } 
         }
     }
 }

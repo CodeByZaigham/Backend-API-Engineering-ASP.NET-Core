@@ -21,6 +21,7 @@ namespace shopforge_backend.config
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<CartItem> Cart { get; set; }
     }
 }
 

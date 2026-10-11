@@ -8,7 +8,7 @@ public class response_model<T>
      public String? Message {get;set;} 
      public bool Status {get;set;}
 
-     public response_model<T> success(T? data , String message)
+     public static response_model<T> success(T? data , String message)
      {
           return new response_model<T>{
                Data=data,
@@ -16,7 +16,7 @@ public class response_model<T>
                Status=true
           };
      }
-     public response_model<T> fail(T? data , String message)
+     public static response_model<T> fail(T? data , String message)
      {
           return new response_model<T>{
                Data=data,

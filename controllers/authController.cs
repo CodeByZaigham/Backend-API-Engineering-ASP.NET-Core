@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using shopforge_backend.DTO;
+using shopforge_backend.generics;
 using shopforge_backend.iservices;
 
 namespace shopforge_backend.controllers
@@ -20,14 +21,25 @@ namespace shopforge_backend.controllers
             try
             {
                 var Result=await _authservice.LoginUser(dto);
-                if (Result.Item1 == 1){return NotFound(Result.Item2);}
-                if (Result.Item1 == 0){return BadRequest(Result.Item2);}
-                return Ok(Result.Item2);
+                if (Result.Item1 == 0)
+                {
+                    return NotFound(
+                        response_model<string>.success(null,Result.Item2)
+                    );
+                }
+                if (Result.Item1 == 1)
+                {
+                    return BadRequest(
+                        response_model<string>.success(null,Result.Item2)
+                    );
+                }
+                return Ok(
+                    response_model<string>.success(null,Result.Item2)
+                );
 
             }
             catch (System.Exception)
             {
-                
                 throw;
             } 
         }

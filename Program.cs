@@ -6,6 +6,10 @@ using shopforge_backend.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Swagger configuration
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -18,9 +22,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();//swagger
+    app.UseSwaggerUI();//swagger
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthorization(); //swagger
+app.MapControllers();
 app.Run();

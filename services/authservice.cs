@@ -38,6 +38,34 @@ namespace shopforge_backend.services
                     return new Tuple<int, string>(3,"something went wrong!");
                }
           }
+
+          public async Task<Tuple<int,string>> RegisterUser(userdto dto)
+          {
+               try
+               {
+                    var existinguser=await _context.Users.AnyAsync(x=>x.Email==dto.Email);
+                    if (existinguser)
+                    {
+                         return new Tuple<int, string>(0,"user already exists!");
+                    }
+                    _context.Add(new models.Users
+                    {
+                         Id=Guid.NewGuid(),
+                         Name=dto.Name,
+                         Email=dto.Email,
+                         Password=dto.Password,
+                         Phone=dto.Phone,
+                         Gender=dto.Gender,
+                         Role=models.Role.User
+                    });
+                    await _context.SaveChangesAsync();
+                    return new Tuple<int, string>(1,"user created successfully!");
+               }
+               catch (System.Exception)
+               {
+                    throw;
+               }
+          }
      } 
 }
 

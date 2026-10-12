@@ -16,7 +16,7 @@ namespace shopforge_backend.controllers
             _authservice=authservice;
         }
         [HttpPost("Login")]
-        public async Task<IActionResult> Login(userdto dto)
+        public async Task<IActionResult> Login([FromBody]userdto dto)
         {
             try
             {
@@ -42,6 +42,12 @@ namespace shopforge_backend.controllers
             {
                 throw;
             } 
+        }
+
+        [HttpPost("RegisterUser")]
+        public async Task<IActionResult> Register([FromBody]userdto dto)
+        {
+            
         }
     }
 }

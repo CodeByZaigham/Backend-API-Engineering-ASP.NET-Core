@@ -34,11 +34,19 @@ namespace shopforge_backend.services
                     {
                          return new Tuple<int, string>(2,$"{existinguser.Role}");
                     }
-                    return new Tuple<int, string>(3,"Invalid password");
+                    else if(result == PasswordVerificationResult.SuccessRehashNeeded)
+                    {
+                         existinguser.Password=hash_password(dto);
+                         _context.Users.Update(existinguser);
+                         _context.SaveChanges();
+                         return new Tuple<int, string>(3,$"{existinguser.Role}");
+
+                    }
+                    return new Tuple<int, string>(4,"Invalid password");
                }
                catch (System.Exception)
                {
-                    return new Tuple<int, string>(4,"something went wrong!");
+                    throw;
                }
           }
 
@@ -51,7 +59,7 @@ namespace shopforge_backend.services
                     {
                          return new Tuple<int, string>(0,"user already exists!");
                     }
-                    _context.Add(new models.Users
+                    _context.Users.Add(new models.Users
                     {
                          Id=Guid.NewGuid(),
                          Name=dto.Name,

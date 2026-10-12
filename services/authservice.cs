@@ -1,4 +1,5 @@
 using System;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using shopforge_backend.config;
 using shopforge_backend.DTO;
@@ -18,24 +19,26 @@ namespace shopforge_backend.services
           {
                try
                {
+                    if(dto == null)
+                    {
+                         return new Tuple<int, string>(0,"please fill all the details");
+                    }
                     var existinguser=await _context.Users.FirstOrDefaultAsync(x=>x.Email==dto.Email);
                     if (existinguser == null)
                     {
-                         return new Tuple<int, string>(0,"invalid email");
+                         return new Tuple<int, string>(1,"invalid email");
                     }
-                    else if(existinguser.Password != dto.Password)
-                    {
-                         return new Tuple<int, string>(1,"invalid password");
-                    }
-                    else
+                    var hasher=new PasswordHasher<string>();
+                    var result=hasher.VerifyHashedPassword(existinguser.Email , existinguser.Password , dto.Password);
+                    if(result == PasswordVerificationResult.Success)
                     {
                          return new Tuple<int, string>(2,$"{existinguser.Role}");
                     }
-                    
+                    return new Tuple<int, string>(3,"Invalid password");
                }
                catch (System.Exception)
                {
-                    return new Tuple<int, string>(3,"something went wrong!");
+                    return new Tuple<int, string>(4,"something went wrong!");
                }
           }
 
@@ -53,7 +56,7 @@ namespace shopforge_backend.services
                          Id=Guid.NewGuid(),
                          Name=dto.Name,
                          Email=dto.Email,
-                         Password=dto.Password,
+                         Password=hash_password(dto),
                          Phone=dto.Phone,
                          Gender=dto.Gender,
                          Role=models.Role.User
@@ -65,6 +68,13 @@ namespace shopforge_backend.services
                {
                     throw;
                }
+          }
+
+          private String hash_password(userdto dto)
+          {
+               var hasher=new PasswordHasher<string>();
+               var Result=hasher.HashPassword(dto.Email,dto.Password);
+               return Result;
           }
      } 
 }

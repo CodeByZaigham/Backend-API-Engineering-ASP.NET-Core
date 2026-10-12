@@ -24,13 +24,13 @@ namespace shopforge_backend.controllers
                 if (Result.Item1 == 0)
                 {
                     return NotFound(
-                        response_model<string>.success(null,Result.Item2)
+                        response_model<string>.fail(null,Result.Item2)
                     );
                 }
                 if (Result.Item1 == 1)
                 {
                     return BadRequest(
-                        response_model<string>.success(null,Result.Item2)
+                        response_model<string>.fail(null,Result.Item2)
                     );
                 }
                 return Ok(
@@ -47,7 +47,23 @@ namespace shopforge_backend.controllers
         [HttpPost("RegisterUser")]
         public async Task<IActionResult> Register([FromBody]userdto dto)
         {
-            
+            try
+            {
+                var Result=await _authservice.RegisterUser(dto);
+                if (Result.Item1 == 0)
+                {
+                    return BadRequest(
+                        response_model<string>.fail(null,Result.Item2)
+                    );
+                }
+                return Ok(
+                    response_model<string>.success(null,Result.Item2)
+                );
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
         }
     }
 }

@@ -27,7 +27,7 @@ namespace shopforge_backend.controllers
                         response_model<string>.fail(null,Result.Item2)
                     );
                 }
-                if (Result.Item1 == 1 || Result.Item1 == 3)
+                if (Result.Item1 == 1 || Result.Item1 == 4)
                 {
                     return NotFound(
                         response_model<string>.fail(null,Result.Item2)
@@ -35,7 +35,7 @@ namespace shopforge_backend.controllers
                 }
 
                 return Ok(
-                    response_model<string>.success(null,Result.Item2)
+                    response_model<string>.success(Result.Item2,"login successfull")
                 );
 
             }

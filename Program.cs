@@ -16,6 +16,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<appdbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 builder.Services.AddControllers();
 builder.Services.AddScoped<iauthservice,authservice>();
+builder.Services.AddScoped<iProductsService,ProductsService>();
 
 var app = builder.Build();
 

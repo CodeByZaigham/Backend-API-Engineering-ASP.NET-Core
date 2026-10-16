@@ -10,7 +10,7 @@ namespace shopforge_backend.controllers
     [ApiController]
     public class ProductsController(iProductsService productservice) : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("GetProducts")]
         public async Task<IActionResult> get_all_products()
         {
             try
@@ -21,6 +21,24 @@ namespace shopforge_backend.controllers
                     return NotFound(response_model<List<productdto>>.fail(null,"no products found!"));
                 }
                 return Ok(response_model<List<productdto>>.success(products.Item2,"products found!"));
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost("AddProduct")]
+        public async Task<IActionResult> AddProducts(productdto dto)
+        {
+            try
+            {
+                var addedproduct = await productservice.addproducts(dto);
+                if(addedproduct.Item1 == 0)
+                {
+                    return Ok(response_model<string>.success(addedproduct.Item2 , "quantity updated of given product!"));  
+                }
+                return Ok(response_model<string>.success(addedproduct.Item2 , "product added successfully!"));  
             }
             catch (System.Exception)
             {

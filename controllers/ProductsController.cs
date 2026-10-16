@@ -10,6 +10,7 @@ namespace shopforge_backend.controllers
     [ApiController]
     public class ProductsController(iProductsService productservice) : ControllerBase
     {
+        [HttpGet]
         public async Task<IActionResult> get_all_products()
         {
             try
@@ -23,7 +24,6 @@ namespace shopforge_backend.controllers
             }
             catch (System.Exception)
             {
-                
                 throw;
             }
         }

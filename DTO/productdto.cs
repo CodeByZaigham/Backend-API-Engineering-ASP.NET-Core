@@ -5,7 +5,7 @@ namespace shopforge_backend.DTO
 {
     public class productdto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; } 
 
         [MaxLength(200)]
         required public string Name { get; set; } = string.Empty;

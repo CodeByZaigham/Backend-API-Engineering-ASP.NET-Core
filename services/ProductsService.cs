@@ -12,6 +12,7 @@ public class ProductsService(appdbcontext _context):iProductsService
     {
         return new Tuple<int,List<productdto>>(1, await _context.Products.AsNoTracking().Select(x=>new productdto
         {
+            Id=x.Id,
             Name=x.Name,
             Image=x.Image,
             Description=x.Description,
@@ -31,11 +32,11 @@ public class ProductsService(appdbcontext _context):iProductsService
             var existingproduct=await _context.Products.FirstOrDefaultAsync(x=>x.Name==dto.Name && x.Category==dto.Category);
             if (existingproduct != null)
             {
-                existingproduct.StockQuantity+=1;
+                existingproduct.StockQuantity+=dto.StockQuantity;
                 existingproduct.UpdatedAt=DateTime.UtcNow;
-                _context.Products.Update(existingproduct);
+                _context.Products.Update(existingproduct); //this will only update quatity, if you want to update product details you have another endpoint
                 _context.SaveChanges();
-                return new Tuple<int, string>(0,$"{existingproduct}");
+                return new Tuple<int, string>(0,$"{System.Text.Json.JsonSerializer.Serialize(existingproduct)}");
             }
             var newproduct=new models.Product
             {
@@ -58,8 +59,25 @@ public class ProductsService(appdbcontext _context):iProductsService
         }
         catch (System.Exception)
         {
-            
             throw;
         }
+    }
+
+    public async Task<Tuple<int,string>> UpdateProduct(productdto dto)
+    {
+        var existingproduct=await _context.Products.FirstOrDefaultAsync(x=>x.Name==dto.Name && x.Category==dto.Category);
+        if (existingproduct != null)
+        {
+            existingproduct.Name=dto.Name;
+            existingproduct.Description=dto.Description;
+            existingproduct.Image=dto.Image;
+            existingproduct.Price=dto.Price;
+            existingproduct.StockQuantity=dto.StockQuantity;
+            existingproduct.IsAvailable=dto.IsAvailable;
+            existingproduct.UpdatedAt=DateTime.UtcNow;
+            _context.Products.Update(existingproduct); 
+            _context.SaveChanges();
+        }
+        return new Tuple<int, string>(0,$"{System.Text.Json.JsonSerializer.Serialize(existingproduct)}");
     }
 }

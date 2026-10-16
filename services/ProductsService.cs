@@ -23,4 +23,36 @@ public class ProductsService(appdbcontext _context):iProductsService
             UpdatedAt=x.UpdatedAt
         }).ToListAsync());
     }
+
+    public async Task<Tuple<int,string>> addproducts(productdto dto)
+    {
+        var existingproduct=await _context.Products.FirstOrDefaultAsync(x=>x.Name==dto.Name && x.Category==dto.Category);
+        if (existingproduct != null)
+        {
+            existingproduct.StockQuantity+=1;
+            existingproduct.UpdatedAt=DateTime.UtcNow;
+            _context.Products.Update(existingproduct);
+            _context.SaveChanges();
+            return new Tuple<int, string>(0,$"{existingproduct}");
+        }
+        var newproduct=new models.Product
+        {
+            Id=Guid.NewGuid(),
+            Name=dto.Name,
+            Description=dto.Description,
+            Image=dto.Image,
+            Price=dto.Price,
+            Category=dto.Category,
+            StockQuantity=dto.StockQuantity,
+            IsAvailable=dto.IsAvailable,
+            CreatedAt=dto.CreatedAt
+        };
+        _context.Products.Add(newproduct);
+        await _context.SaveChangesAsync();
+        return new Tuple<int, string>(
+            1,
+            System.Text.Json.JsonSerializer.Serialize(newproduct)
+        );
+
+    }
 }

@@ -45,5 +45,25 @@ namespace shopforge_backend.controllers
                 throw;
             }
         }
+
+        [HttpPatch("UpdateProduct")]
+        public async Task<IActionResult> UpdateProduct(productdto dto)
+        {
+            try
+            {
+                var updatedproduct = await productservice.UpdateProduct(dto);
+                if (updatedproduct.Item1 == 0)
+                {
+                    return Ok(response_model<string>.success(updatedproduct.Item2 , "Product details Updated!"));  
+                }
+                return BadRequest();
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
+        
     }
 }

@@ -35,7 +35,7 @@ public class ProductsService(appdbcontext _context):iProductsService
                 existingproduct.StockQuantity+=dto.StockQuantity;
                 existingproduct.UpdatedAt=DateTime.UtcNow;
                 _context.Products.Update(existingproduct); //this will only update quatity, if you want to update product details you have another endpoint
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return new Tuple<int, string>(0,$"{System.Text.Json.JsonSerializer.Serialize(existingproduct)}");
             }
             var newproduct=new models.Product
@@ -76,8 +76,29 @@ public class ProductsService(appdbcontext _context):iProductsService
             existingproduct.IsAvailable=dto.IsAvailable;
             existingproduct.UpdatedAt=DateTime.UtcNow;
             _context.Products.Update(existingproduct); 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         return new Tuple<int, string>(0,$"{System.Text.Json.JsonSerializer.Serialize(existingproduct)}");
+    }
+
+    public async Task<Tuple<int,string>> DeleteProduct(Guid Productid)
+    {
+        try
+        {
+            var existingproduct=await _context.Products.FirstOrDefaultAsync(x=>x.Id==Productid);
+            if (existingproduct == null)
+            {
+                return new Tuple<int, string>(0, "Product not found");
+            }
+
+            _context.Products.Remove(existingproduct);
+            await _context.SaveChangesAsync();
+
+            return new Tuple<int, string>(1, "Product deleted successfully");
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
     }
 }

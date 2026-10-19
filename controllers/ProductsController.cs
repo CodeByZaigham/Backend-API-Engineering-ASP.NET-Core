@@ -64,6 +64,23 @@ namespace shopforge_backend.controllers
             }
         }
 
-        
+        [HttpDelete("DeleteProduct")]
+        public async Task<IActionResult> DeleteProduct(Guid ProductId)
+        {
+            try
+            {
+                var deletedproduct = await productservice.DeleteProduct(ProductId);
+                if(deletedproduct.Item1 == 0)
+                {
+                    return NotFound(response_model<string>.fail(deletedproduct.Item2 , "Product not found!"));
+                }
+                return Ok(response_model<string>.success(deletedproduct.Item2 , "Product deleted!"));
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
+        }
     }
 }

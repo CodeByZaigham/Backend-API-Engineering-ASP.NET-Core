@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using shopforge_backend.DTO;
 using shopforge_backend.generics;
 using shopforge_backend.iservices;
+using shopforge_backend.models;
 
 namespace shopforge_backend.controllers
 {
@@ -28,6 +29,17 @@ namespace shopforge_backend.controllers
             }
         }
 
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetProductById(Guid id)
+        {
+            var product = await productservice.GetProductById(id);
+
+            if (product == null)
+                return NotFound(response_model<Product>.fail(null,"product exists."));
+
+            return Ok(response_model<Product>.success(product,"product exists."));
+        } // one commit
+
         [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProducts(productdto dto)
         {
@@ -52,7 +64,7 @@ namespace shopforge_backend.controllers
             try
             {
                 var updatedproduct = await productservice.UpdateProduct(dto);
-                if (updatedproduct.Item1 == 0)
+                if (updatedproduct.Item1 == 1)
                 {
                     return Ok(response_model<string>.success(updatedproduct.Item2 , "Product details Updated!"));  
                 }

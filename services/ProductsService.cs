@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using shopforge_backend.config;
 using shopforge_backend.DTO;
 using shopforge_backend.iservices;
+using shopforge_backend.Migrations;
+using shopforge_backend.models;
 
 namespace shopforge_backend.services;
 
@@ -14,7 +16,9 @@ public class ProductsService(appdbcontext _context):iProductsService
         {
             Id=x.Id,
             Name=x.Name,
-            Image=x.Image,
+            Image1=x.Image1,
+            Image2=x.Image2,
+            Image3=x.Image3,
             Description=x.Description,
             Price=x.Price,
             Category=x.Category,
@@ -24,6 +28,12 @@ public class ProductsService(appdbcontext _context):iProductsService
             UpdatedAt=x.UpdatedAt
         }).ToListAsync());
     }
+
+    public async Task<Product?> GetProductById(Guid id)
+    {
+        return await _context.Products
+            .FirstOrDefaultAsync(p => p.Id == id);
+    } // one commit
 
     public async Task<Tuple<int,string>> addproducts(productdto dto)
     {
@@ -43,7 +53,9 @@ public class ProductsService(appdbcontext _context):iProductsService
                 Id=Guid.NewGuid(),
                 Name=dto.Name,
                 Description=dto.Description,
-                Image=dto.Image,
+                Image1=dto.Image1,
+                Image2=dto.Image2,
+                Image3=dto.Image3,
                 Price=dto.Price,
                 Category=dto.Category,
                 StockQuantity=dto.StockQuantity,
@@ -65,21 +77,8 @@ public class ProductsService(appdbcontext _context):iProductsService
 
     public async Task<Tuple<int,string>> UpdateProduct(productdto dto)
     {
-        var existingproduct=await _context.Products.FirstOrDefaultAsync(x=>x.Name==dto.Name && x.Category==dto.Category);
-        if (existingproduct != null)
-        {
-            existingproduct.Name=dto.Name;
-            existingproduct.Description=dto.Description;
-            existingproduct.Image=dto.Image;
-            existingproduct.Price=dto.Price;
-            existingproduct.StockQuantity=dto.StockQuantity;
-            existingproduct.IsAvailable=dto.IsAvailable;
-            existingproduct.UpdatedAt=DateTime.UtcNow;
-            _context.Products.Update(existingproduct); 
-            await _context.SaveChangesAsync();
-        }
-        return new Tuple<int, string>(0,$"{System.Text.Json.JsonSerializer.Serialize(existingproduct)}");
-    }
+      
+    }  
 
     public async Task<Tuple<int,string>> DeleteProduct(Guid Productid)
     {

@@ -77,8 +77,35 @@ public class ProductsService(appdbcontext _context):iProductsService
 
     public async Task<Tuple<int,string>> UpdateProduct(productdto dto)
     {
-      
-    }  
+        var product = await _context.Products
+        .FirstOrDefaultAsync(p => p.Id == dto.Id);
+
+        if (product == null)
+            return new Tuple<int, string>(0, "Product not found");
+
+        product.Name = string.IsNullOrWhiteSpace(dto.Name) ? product.Name : dto.Name;
+        product.Description = string.IsNullOrWhiteSpace(dto.Description) ? product.Description : dto.Description;
+        product.Image1 = string.IsNullOrWhiteSpace(dto.Image1) ? product.Image1 : dto.Image1;
+        product.Image2 = string.IsNullOrWhiteSpace(dto.Image2) ? product.Image2 : dto.Image2;
+        product.Image3 = string.IsNullOrWhiteSpace(dto.Image3) ? product.Image3 : dto.Image3;
+
+        if (dto.Price > 0 && dto.Price!=product.Price)
+            product.Price = dto.Price;
+
+        if (dto.StockQuantity !< 0 && dto.StockQuantity!=product.StockQuantity)
+            product.StockQuantity = dto.StockQuantity;
+
+        product.IsAvailable = dto.IsAvailable;
+
+        product.UpdatedAt = DateTime.UtcNow;
+
+        await _context.SaveChangesAsync();
+
+        return new Tuple<int, string>(
+            1,
+            System.Text.Json.JsonSerializer.Serialize(product)
+        );
+    }
 
     public async Task<Tuple<int,string>> DeleteProduct(Guid Productid)
     {

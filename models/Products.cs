@@ -11,10 +11,12 @@ namespace shopforge_backend.models
         [MaxLength(200)]
         public string Name { get; set; } = string.Empty;
 
-        public string? Image { get; set; }
-
+        [Required]
+        public string Image1 { get; set; } = string.Empty;
+        public string? Image2 { get; set; }
+        public string? Image3 { get; set; }
         public string? Description { get; set; }
-
+        
         [Required]
         public decimal Price { get; set; }
 

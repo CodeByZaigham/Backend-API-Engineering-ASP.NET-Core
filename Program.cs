@@ -1,5 +1,9 @@
+using System.Text;
+using System.Text.Unicode;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using shopforge_backend.config;
 using shopforge_backend.iservices;
 using shopforge_backend.services;
@@ -14,6 +18,27 @@ builder.Services.AddSwaggerGen();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<appdbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme=JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme=JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata=false;
+    options.SaveToken=true;
+    options.TokenValidationParameters=new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience=true,
+        ValidateLifetime=true,
+        ValidateIssuerSigningKey=true,
+        ValidIssuer=builder.Configuration.GetValue<string>("JWT:Issuer"),
+        ValidAudience=builder.Configuration.GetValue<string>("JWT:Audience"),
+        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:Key")))
+    };
+});
+
 builder.Services.AddControllers();
 builder.Services.AddScoped<iauthservice,authservice>();
 builder.Services.AddScoped<iProductsService,ProductsService>();

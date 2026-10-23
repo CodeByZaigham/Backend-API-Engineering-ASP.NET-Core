@@ -31,4 +31,4 @@ namespace shopforge_backend.models
 
         public DateTime? UpdatedAt { get; set; }
     }
-}
+} 

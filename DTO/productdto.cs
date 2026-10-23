@@ -10,7 +10,9 @@ namespace shopforge_backend.DTO
         [MaxLength(200)]
         required public string Name { get; set; } = string.Empty;
 
-        public string? Image { get; set; }
+        required public string Image1 { get; set; }
+        public string? Image2 { get; set; }
+        public string? Image3 { get; set; }
 
         public string? Description { get; set; }
         required public decimal Price { get; set; }
@@ -25,16 +27,5 @@ namespace shopforge_backend.DTO
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; }
-    }
-
-    public class UpdateProductDto
-    {
-        public string? Name { get; set; }
-        public string? Description { get; set; }
-        public string? Image { get; set; }
-        public decimal? Price { get; set; }
-        public string? Category { get; set; }
-        public int? StockQuantity { get; set; }
-        public bool? IsAvailable { get; set; }
-    }   
+    }    
 }

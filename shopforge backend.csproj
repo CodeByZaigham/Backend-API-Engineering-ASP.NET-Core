@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>shopforge_backend</RootNamespace>
+    <UserSecretsId>005bb7f8-fb80-40e6-be67-60adbd9a116a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

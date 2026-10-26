@@ -1,18 +1,53 @@
 using System;
+using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using shopforge_backend.config;
 using shopforge_backend.DTO;
 using shopforge_backend.iservices;
+using shopforge_backend.models;
 
 namespace shopforge_backend.services
 {
-     public class authservice:iauthservice
+     public class authservice(appdbcontext _context , IConfiguration configuration):iauthservice
      {
-          private readonly appdbcontext _context;
-          public authservice(appdbcontext context)
+          // private readonly appdbcontext _context;
+          // public authservice(appdbcontext context)
+          // {
+          //      _context=context;
+          // }
+
+          private string GetJWTToken(Users user)
           {
-               _context=context;
+               var secret =new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
+               ?? throw new InvalidOperationException("JWT secret is missing.");
+
+               var issuer = configuration["JWT:Issuer"]!;
+               var audience = configuration["JWT:Audience"]!;
+
+               var claims = new List<Claim>
+               {
+                    new Claim(
+                         JwtRegisteredClaimNames.Sub,
+                         user.Id.ToString()),
+
+                    new Claim(
+                         JwtRegisteredClaimNames.Jti,
+                         Guid.NewGuid().ToString()),
+
+                    new Claim(
+                         JwtRegisteredClaimNames.Email,
+                         user.Email ?? string.Empty),
+
+                    new Claim(
+                         ClaimTypes.NameIdentifier,
+                         user.Id.ToString()),
+
+                    new Claim(
+                         ClaimTypes.Role,
+                         user.Role.ToString())
+               };
           }
 
           public async Task<Tuple<int,string>> LoginUser(userdto dto)

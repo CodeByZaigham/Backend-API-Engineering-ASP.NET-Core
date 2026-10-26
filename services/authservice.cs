@@ -60,35 +60,49 @@ namespace shopforge_backend.services
                return new JwtSecurityTokenHandler().WriteToken(token);
           }
 
-          public async Task<Tuple<int,string>> LoginUser(userdto dto)
+          public async Task<Tuple<int,tokendto>> LoginUser(userdto dto)
           {
                try
                {
+                    var tokendto=new tokendto();
                     if(dto == null)
                     {
-                         return new Tuple<int, string>(0,"please fill all the details");
+                        
+                         tokendto.token="";
+                         tokendto.message="please fill all the details";
+                         
+                         return new Tuple<int, tokendto>(0,tokendto);
                     }
                     var existinguser=await _context.Users.FirstOrDefaultAsync(x=>x.Email==dto.Email);
                     if (existinguser == null)
                     {
-                         return new Tuple<int, string>(1,"invalid email");
+                         tokendto.token="";
+                         tokendto.message="invalid email";
+                         return new Tuple<int, tokendto>(1,tokendto);
                     }
                     var hasher=new PasswordHasher<string>();
                     var result=hasher.VerifyHashedPassword(existinguser.Email , existinguser.Password , dto.Password);
                     if(result == PasswordVerificationResult.Success)
                     {
                          var token = GetJWTToken(existinguser);
-                         return new Tuple<int, string>(2,$"{token}");
+                         tokendto.token=token;
+                         tokendto.message="login successful";
+                         return new Tuple<int, tokendto>(2,tokendto);
                     }
                     else if(result == PasswordVerificationResult.SuccessRehashNeeded)
                     {
                          existinguser.Password=hash_password(dto);
                          _context.Users.Update(existinguser);
                          _context.SaveChanges();
-                         return new Tuple<int, string>(3,$"{existinguser.Role}");
+                         var token = GetJWTToken(existinguser);
+                         tokendto.token=token;
+                         tokendto.message="login successful";
+                         return new Tuple<int, tokendto>(3,tokendto);
 
                     }
-                    return new Tuple<int, string>(4,"Invalid password");
+                    tokendto.token="";
+                    tokendto.message="invalid password";
+                    return new Tuple<int, tokendto>(4,tokendto);
                }
                catch (System.Exception)
                {

@@ -24,18 +24,18 @@ namespace shopforge_backend.controllers
                 if (Result.Item1 == 0)
                 {
                     return BadRequest(
-                        response_model<string>.fail(null,Result.Item2)
+                        response_model<tokendto>.fail(Result.Item2,Result.Item2.message)
                     );
                 }
                 if (Result.Item1 == 1 || Result.Item1 == 4)
                 {
                     return NotFound(
-                        response_model<string>.fail(null,Result.Item2)
+                        response_model<tokendto>.fail(Result.Item2,Result.Item2.message)
                     );
                 }
 
                 return Ok(
-                    response_model<string>.success(Result.Item2,"login successfull")
+                    response_model<tokendto>.success(Result.Item2,Result.Item2.message)
                 );
 
             }

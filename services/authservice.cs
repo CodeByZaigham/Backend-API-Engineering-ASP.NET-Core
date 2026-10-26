@@ -1,4 +1,6 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,18 +31,6 @@ namespace shopforge_backend.services
                var claims = new List<Claim>
                {
                     new Claim(
-                         JwtRegisteredClaimNames.Sub,
-                         user.Id.ToString()),
-
-                    new Claim(
-                         JwtRegisteredClaimNames.Jti,
-                         Guid.NewGuid().ToString()),
-
-                    new Claim(
-                         JwtRegisteredClaimNames.Email,
-                         user.Email ?? string.Empty),
-
-                    new Claim(
                          ClaimTypes.NameIdentifier,
                          user.Id.ToString()),
 
@@ -48,6 +38,26 @@ namespace shopforge_backend.services
                          ClaimTypes.Role,
                          user.Role.ToString())
                };
+
+               var credentials = new SigningCredentials(
+                    secret,
+                    SecurityAlgorithms.HmacSha256
+               );
+
+               var expires = DateTime.UtcNow.AddMinutes(
+               double.Parse(
+                    configuration["JWT:AccessTokenMinutes"] ?? "15")
+               );
+
+               var token = new JwtSecurityToken(
+                    issuer: issuer,
+                    audience: audience,
+                    claims: claims,
+                    expires: expires,
+                    signingCredentials: credentials
+               );
+
+               return new JwtSecurityTokenHandler().WriteToken(token);
           }
 
           public async Task<Tuple<int,string>> LoginUser(userdto dto)

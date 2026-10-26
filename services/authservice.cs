@@ -77,7 +77,8 @@ namespace shopforge_backend.services
                     var result=hasher.VerifyHashedPassword(existinguser.Email , existinguser.Password , dto.Password);
                     if(result == PasswordVerificationResult.Success)
                     {
-                         return new Tuple<int, string>(2,$"{existinguser.Role}");
+                         var token = GetJWTToken(existinguser);
+                         return new Tuple<int, string>(2,$"{token}");
                     }
                     else if(result == PasswordVerificationResult.SuccessRehashNeeded)
                     {

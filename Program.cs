@@ -60,6 +60,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddScoped<iauthservice,authservice>();
 builder.Services.AddScoped<iProductsService,ProductsService>();
+builder.Services.AddScoped<iCartService,CartService>();
 
 var app = builder.Build();
 

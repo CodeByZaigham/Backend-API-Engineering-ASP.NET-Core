@@ -61,6 +61,7 @@ namespace shopforge_backend.controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPatch("UpdateProduct")]
         public async Task<IActionResult> UpdateProduct(productdto dto)
         {
@@ -78,7 +79,8 @@ namespace shopforge_backend.controllers
                 throw;
             }
         }
-
+        
+        [Authorize(Roles = "admin")]
         [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(Guid ProductId)
         {

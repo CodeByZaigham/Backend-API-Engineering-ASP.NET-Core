@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using shopforge_backend.DTO;
@@ -40,6 +42,7 @@ namespace shopforge_backend.controllers
             return Ok(response_model<Product>.success(product,"product exists."));
         } // one commit
 
+        [Authorize(Roles = "admin")]
         [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProducts(productdto dto)
         {

@@ -5,7 +5,7 @@ namespace shopforge_backend.DTO
 {
     public class productdto
     {
-        public Guid Id { get; set; } 
+        public Guid Id { get; set; }
 
         [MaxLength(200)]
         required public string Name { get; set; } = string.Empty;
@@ -24,8 +24,28 @@ namespace shopforge_backend.DTO
 
         public bool IsAvailable { get; set; } = true;
 
+        // NEW
+        [Range(0, 5)]
+        public decimal Rating { get; set; }
+
+        // NEW
+        public bool IsOffer { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; }
-    }    
+    }
+
+    // NEW: query-string filters for GET /api/Products/GetProducts
+    // Example: ?category=shoes&search=leather&maxPrice=150&sort=price-low
+    public class productqueryparams
+    {
+        // "all" / "shoes" / "shirts" / "pants" / "offers"
+        public string? Category { get; set; }
+        public string? Search { get; set; }
+        public decimal? MaxPrice { get; set; }
+        // "featured" (default) / "price-low" / "price-high" / "rating"
+        public string? Sort { get; set; }
+        public bool? IsOffer { get; set; }
+    }
 }

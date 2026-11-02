@@ -14,14 +14,15 @@ namespace shopforge_backend.models
         [Required]
         public Guid ProductId { get; set; }
 
-        [Required]
+        [Range(1, 100)]
         public int Quantity { get; set; } = 1;
 
-        // Price at the time the item was added to the cart
-        [Required]
-        public decimal UnitPrice { get; set; }
+        // NOTE: UnitPrice was removed. The price always comes from Product.Price,
+        // so the cart can never show a stale price.
 
-        // Navigation property
+        [ForeignKey(nameof(UserId))]
+        public Users? User { get; set; }
+
         [ForeignKey(nameof(ProductId))]
         public Product? Product { get; set; }
     }

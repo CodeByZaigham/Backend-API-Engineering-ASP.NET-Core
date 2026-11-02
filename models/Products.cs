@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace shopforge_backend.models
 {
@@ -16,7 +17,7 @@ namespace shopforge_backend.models
         public string? Image2 { get; set; }
         public string? Image3 { get; set; }
         public string? Description { get; set; }
-        
+
         [Required]
         public decimal Price { get; set; }
 
@@ -27,8 +28,15 @@ namespace shopforge_backend.models
 
         public bool IsAvailable { get; set; } = true;
 
+        // NEW: shown on the product cards in the frontend (0 - 5)
+        [Precision(3, 1)]
+        public decimal Rating { get; set; }
+
+        // NEW: used by the "Offers" page
+        public bool IsOffer { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedAt { get; set; }
     }
-} 
+}

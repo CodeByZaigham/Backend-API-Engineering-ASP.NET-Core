@@ -58,6 +58,19 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddControllers();
+
+// added this to allow our frontend access its endpoints without being blocked by browser.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(
+        "Frontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+    );
+});
+
+
 builder.Services.AddScoped<iauthservice,authservice>();
 builder.Services.AddScoped<iProductsService,ProductsService>();
 builder.Services.AddScoped<iCartService,CartService>();
@@ -74,6 +87,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("Frontend"); // must come before auth, allowed configured CORS
 app.UseAuthentication(); //jwt
 app.UseAuthorization(); //swagger , jwt
 app.MapControllers();

@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using shopforge_backend.config;
-using shopforge_backend.DTO;
-using shopforge_backend.iservices;
+using shopforge_backend.Application.DTO;
+using shopforge_backend.Application.iservices;
 using shopforge_backend.models;
 
 namespace shopforge_backend.services

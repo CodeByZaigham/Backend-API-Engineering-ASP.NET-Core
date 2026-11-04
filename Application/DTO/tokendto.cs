@@ -1,6 +1,6 @@
 using System;
 
-namespace shopforge_backend.DTO;
+namespace shopforge_backend.Application.DTO;
 
 public class tokendto
 {

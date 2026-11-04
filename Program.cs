@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using shopforge_backend.config;
-using shopforge_backend.iservices;
+using shopforge_backend.Application.iservices;
 using shopforge_backend.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// dependency injections
 // Swagger configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -56,6 +57,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:Key")))
     };
 });
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -85,9 +87,14 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+//Middlewares
+
 app.UseHttpsRedirection();
 
 app.UseCors("Frontend"); // must come before auth, allowed configured CORS
+
+app.UseRouting();
+
 app.UseAuthentication(); //jwt
 app.UseAuthorization(); //swagger , jwt
 app.MapControllers();

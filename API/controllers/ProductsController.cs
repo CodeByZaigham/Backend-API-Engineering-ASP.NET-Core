@@ -2,9 +2,9 @@ using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using shopforge_backend.DTO;
 using shopforge_backend.generics;
-using shopforge_backend.iservices;
+using shopforge_backend.Application.DTO;
+using shopforge_backend.Application.iservices;
 using shopforge_backend.models;
 
 namespace shopforge_backend.controllers

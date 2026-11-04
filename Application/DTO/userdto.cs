@@ -1,7 +1,7 @@
 using System;
 using shopforge_backend.models;
 
-namespace shopforge_backend.DTO
+namespace shopforge_backend.Application.DTO
 {
      public class userdto
      {

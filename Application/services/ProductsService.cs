@@ -1,8 +1,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using shopforge_backend.config;
-using shopforge_backend.DTO;
-using shopforge_backend.iservices;
+using shopforge_backend.Application.DTO;
+using shopforge_backend.Application.iservices;
 using shopforge_backend.Migrations;
 using shopforge_backend.models;
 

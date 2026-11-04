@@ -1,8 +1,8 @@
 using System;
-using shopforge_backend.DTO;
+using shopforge_backend.Application.DTO;
 using shopforge_backend.models;
 
-namespace shopforge_backend.iservices;
+namespace shopforge_backend.Application.iservices;
 
 public interface iProductsService
 {

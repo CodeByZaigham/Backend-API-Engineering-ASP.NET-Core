@@ -1,6 +1,6 @@
 using System;
 
-namespace shopforge_backend.iservices;
+namespace shopforge_backend.Application.iservices;
 
 public interface iCartService
 {

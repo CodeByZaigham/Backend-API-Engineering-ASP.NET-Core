@@ -1,13 +1,12 @@
 using System;
-using shopforge_backend.Application.DTO;
-using shopforge_backend.models;
+using shopforge_backend.DTO;
 
-namespace shopforge_backend.Application.iservices;
+namespace shopforge_backend.iservices;
 
 public interface iProductsService
 {
-    Task<Tuple<int,List<productdto>>> Getallproducts();
-    Task<Product?> GetProductById(Guid id);
+    Task<Tuple<int,List<productdto>>> Getallproducts(productqueryparams query);
+    Task<productdto?> GetProductById(Guid id);
     Task<Tuple<int,string>> addproducts(productdto dto);
     Task<Tuple<int,string>> UpdateProduct(productdto dto);
     Task<Tuple<int,string>> DeleteProduct(Guid Productid);

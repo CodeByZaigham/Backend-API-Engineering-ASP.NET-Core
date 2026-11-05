@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace shopforge_backend.models
+namespace shopforge_backend.Domain.models
 {
     public class Coupon
     {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace shopforge_backend.models
+namespace shopforge_backend.Domain.models
 {
     public class CartItem
     {

@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using shopforge_backend.models;
+using shopforge_backend.Domain.models;
 
 namespace shopforge_backend.Application.DTO
 {

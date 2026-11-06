@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using shopforge_backend.Domain.models;
 
-namespace shopforge_backend.config
+namespace shopforge_backend.Infrastructure.config
 {
     public class appdbcontext : DbContext
     {

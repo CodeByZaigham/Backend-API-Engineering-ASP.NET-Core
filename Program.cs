@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using shopforge_backend.config;
+using shopforge_backend.Infrastructure.config;
 using shopforge_backend.Application.iservices;
 using shopforge_backend.services;
+using shopforge_backend.Application.services;
 
 var builder = WebApplication.CreateBuilder(args);
 

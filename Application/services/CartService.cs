@@ -70,4 +70,19 @@ public class CartService(appdbcontext _context, iCouponService couponService) : 
           var summary = await BuildSummary(userId, couponCode, ShippingMethod.Standard);
           return response_model<cartsummarydto>.success(summary, "cart updated");
      }
+
+     public async Task<response_model<cartsummarydto>> RemoveItem(Guid userId, Guid productId, string? couponCode)
+     {
+          var item = await _context.Cart
+               .FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
+
+          if (item == null)
+               return response_model<cartsummarydto>.fail(null, "Item is not in your cart.", 404);
+
+          _context.Cart.Remove(item);
+          await _context.SaveChangesAsync();
+
+          var summary = await BuildSummary(userId, couponCode, ShippingMethod.Standard);
+          return response_model<cartsummarydto>.success(summary, "item removed");
+     }
 }

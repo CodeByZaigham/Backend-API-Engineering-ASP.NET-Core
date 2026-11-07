@@ -10,5 +10,84 @@ namespace shopforge_backend.Application.services;
 
 public class OrderService(appdbcontext _context, iCouponService couponService) : iOrderService
 {
-     
+     public async Task<response_model<orderresponsedto>> PlaceOrder(Guid userId, placeorderdto dto)
+     {
+          // Products are loaded WITH tracking on purpose: we reduce their stock below.
+          var cartRows = await _context.Cart
+               .Include(c => c.Product)
+               .Where(c => c.UserId == userId)
+               .ToListAsync();
+
+          if (cartRows.Count == 0)
+               return response_model<orderresponsedto>.fail(null, "Your cart is empty.");
+
+          foreach (var row in cartRows)
+          {
+               var product = row.Product;
+               if (product == null || !product.IsAvailable)
+                    return response_model<orderresponsedto>.fail(null, "A product in your cart is no longer available.");
+
+               if (row.Quantity > product.StockQuantity)
+                    return response_model<orderresponsedto>.fail(null,
+                         $"{product.Name}: only {product.StockQuantity} left in stock.");
+          }
+
+          string? couponCode = null;
+          var discountPercent = 0;
+          if (!string.IsNullOrWhiteSpace(dto.CouponCode))
+          {
+               var coupon = await couponService.FindValidCoupon(dto.CouponCode);
+               if (coupon == null)
+                    return response_model<orderresponsedto>.fail(null, "Invalid or expired coupon code.");
+
+               couponCode = coupon.Code;
+               discountPercent = coupon.DiscountPercent;
+          }
+
+          var subtotal = cartRows.Sum(r => r.Product!.Price * r.Quantity);
+          var price = PricingCalculator.Calculate(subtotal, discountPercent, dto.ShippingMethod);
+
+          var order = new Order
+          {
+               OrderNumber = await GenerateOrderNumber(),
+               UserId = userId,
+               Status = OrderStatus.Pending,
+               ShippingMethod = dto.ShippingMethod,
+               PaymentMethod = dto.PaymentMethod,
+               Subtotal = price.Subtotal,
+               Discount = price.Discount,
+               ShippingCost = price.Shipping,
+               Tax = price.Tax,
+               Total = price.Total,
+               CouponCode = couponCode,
+               Email = dto.Email,
+               Phone = dto.Phone,
+               FirstName = dto.FirstName,
+               LastName = dto.LastName,
+               Address = dto.Address,
+               City = dto.City,
+               State = dto.State,
+               PostalCode = dto.PostalCode,
+               Items = cartRows.Select(r => new OrderItem
+               {
+                    ProductId = r.ProductId,
+                    ProductName = r.Product!.Name,
+                    ProductImage = r.Product.Image1,
+                    UnitPrice = r.Product.Price,
+                    Quantity = r.Quantity
+               }).ToList()
+          };
+
+          foreach (var row in cartRows)
+               row.Product!.StockQuantity -= row.Quantity;
+
+          _context.Orders.Add(order);
+          _context.Cart.RemoveRange(cartRows);
+
+          // One SaveChanges = one database transaction: order + stock + cart clear
+          // either all happen or none happen.
+          await _context.SaveChangesAsync();
+
+          return response_model<orderresponsedto>.success(ToDto(order), "Order placed successfully!");
+     }    
 }

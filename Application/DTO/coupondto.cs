@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace shopforge_backend.DTO
+namespace shopforge_backend.Application.DTO
 {
     // POST /api/coupons/validate
     public class validatecoupondto

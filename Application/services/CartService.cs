@@ -85,4 +85,13 @@ public class CartService(appdbcontext _context, iCouponService couponService) : 
           var summary = await BuildSummary(userId, couponCode, ShippingMethod.Standard);
           return response_model<cartsummarydto>.success(summary, "item removed");
      }
+     public async Task<response_model<cartsummarydto>> Clear(Guid userId)
+     {
+          var items = await _context.Cart.Where(c => c.UserId == userId).ToListAsync();
+          _context.Cart.RemoveRange(items);
+          await _context.SaveChangesAsync();
+
+          var summary = await BuildSummary(userId, null, ShippingMethod.Standard);
+          return response_model<cartsummarydto>.success(summary, "cart cleared");
+     }
 }

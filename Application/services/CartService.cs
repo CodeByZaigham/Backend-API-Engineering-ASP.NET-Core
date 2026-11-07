@@ -94,4 +94,48 @@ public class CartService(appdbcontext _context, iCouponService couponService) : 
           var summary = await BuildSummary(userId, null, ShippingMethod.Standard);
           return response_model<cartsummarydto>.success(summary, "cart cleared");
      }
+
+     // Loads the cart rows and works out every number the cart page shows.
+     private async Task<cartsummarydto> BuildSummary(Guid userId, string? couponCode, ShippingMethod shippingMethod)
+     {
+          var rows = await _context.Cart
+               .AsNoTracking()
+               .Include(c => c.Product)
+               .Where(c => c.UserId == userId && c.Product != null)
+               .ToListAsync();
+
+          var items = rows
+               .Select(c => new cartitemresponsedto
+               {
+                    ProductId = c.ProductId,
+                    Name = c.Product!.Name,
+                    Image = c.Product.Image1,
+                    UnitPrice = c.Product.Price,
+                    Quantity = c.Quantity,
+                    LineTotal = c.Product.Price * c.Quantity,
+                    StockQuantity = c.Product.StockQuantity
+               })
+               .OrderBy(i => i.Name)
+               .ToList();
+
+          var subtotal = items.Sum(i => i.LineTotal);
+
+          var coupon = await couponService.FindValidCoupon(couponCode);
+          var percent = coupon?.DiscountPercent ?? 0;
+
+          var price = PricingCalculator.Calculate(subtotal, percent, shippingMethod);
+
+          return new cartsummarydto
+          {
+               Items = items,
+               ItemCount = items.Sum(i => i.Quantity),
+               Subtotal = price.Subtotal,
+               CouponCode = coupon?.Code,
+               DiscountPercent = percent,
+               Discount = price.Discount,
+               Shipping = price.Shipping,
+               Tax = price.Tax,
+               Total = price.Total
+          };
+     }
 }

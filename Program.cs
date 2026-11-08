@@ -78,6 +78,7 @@ builder.Services.AddScoped<iauthservice,authservice>();
 builder.Services.AddScoped<iProductsService,ProductsService>();
 builder.Services.AddScoped<iCartService,CartService>();
 builder.Services.AddScoped<iCouponService,CouponService>();
+builder.Services.AddScoped<iOrderService,OrderService>();
 
 var app = builder.Build();
 

@@ -89,5 +89,17 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
           await _context.SaveChangesAsync();
 
           return response_model<orderresponsedto>.success(ToDto(order), "Order placed successfully!");
+     }
+
+     public async Task<response_model<List<orderresponsedto>>> GetMyOrders(Guid userId)
+     {
+          var orders = await _context.Orders
+               .AsNoTracking()
+               .Include(o => o.Items)
+               .Where(o => o.UserId == userId)
+               .OrderByDescending(o => o.CreatedAt)
+               .ToListAsync();
+
+          return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
      }    
 }

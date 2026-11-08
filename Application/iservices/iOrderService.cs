@@ -6,5 +6,7 @@ namespace shopforge_backend.Application.iservices;
 
 public interface iOrderService
 {
+     Task<response_model<orderresponsedto>> PlaceOrder(Guid userId, placeorderdto dto);
+     Task<response_model<List<orderresponsedto>>> GetMyOrders(Guid userId);
      
 }

@@ -127,4 +127,19 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
 
           return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
      }
+
+     public async Task<response_model<orderresponsedto>> UpdateStatus(Guid orderId, updateorderstatusdto dto)
+     {
+          var order = await _context.Orders
+               .Include(o => o.Items)
+               .FirstOrDefaultAsync(o => o.Id == orderId);
+
+          if (order == null)
+               return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
+
+          order.Status = dto.Status;
+          await _context.SaveChangesAsync();
+
+          return response_model<orderresponsedto>.success(ToDto(order), "order status updated");
+     }
 }

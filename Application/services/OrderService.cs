@@ -142,4 +142,15 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
 
           return response_model<orderresponsedto>.success(ToDto(order), "order status updated");
      }
+
+     private async Task<string> GenerateOrderNumber()
+     {
+          for (var attempt = 0; attempt < 5; attempt++)
+          {
+               var number = $"SF-{Random.Shared.Next(100000, 999999)}";
+               if (!await _context.Orders.AnyAsync(o => o.OrderNumber == number))
+                    return number;
+          }
+          return $"SF-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
+     }
 }

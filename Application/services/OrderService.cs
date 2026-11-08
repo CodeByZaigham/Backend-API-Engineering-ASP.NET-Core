@@ -101,5 +101,19 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
                .ToListAsync();
 
           return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
-     }    
+     }  
+
+     public async Task<response_model<orderresponsedto>> GetOrder(Guid userId, Guid orderId, bool isAdmin)
+     {
+          var order = await _context.Orders
+               .AsNoTracking()
+               .Include(o => o.Items)
+               .FirstOrDefaultAsync(o => o.Id == orderId);
+
+          // Same message for "doesn't exist" and "not yours" so ids can't be probed
+          if (order == null || (!isAdmin && order.UserId != userId))
+               return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
+
+          return response_model<orderresponsedto>.success(ToDto(order), "order loaded");
+     }  
 }

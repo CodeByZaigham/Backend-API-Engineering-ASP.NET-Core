@@ -153,4 +153,40 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
           }
           return $"SF-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
      }
+
+     private static orderresponsedto ToDto(Order o)
+     {
+          return new orderresponsedto
+          {
+               Id = o.Id,
+               OrderNumber = o.OrderNumber,
+               Status = o.Status,
+               ShippingMethod = o.ShippingMethod,
+               PaymentMethod = o.PaymentMethod,
+               Subtotal = o.Subtotal,
+               Discount = o.Discount,
+               ShippingCost = o.ShippingCost,
+               Tax = o.Tax,
+               Total = o.Total,
+               CouponCode = o.CouponCode,
+               Email = o.Email,
+               Phone = o.Phone,
+               FirstName = o.FirstName,
+               LastName = o.LastName,
+               Address = o.Address,
+               City = o.City,
+               State = o.State,
+               PostalCode = o.PostalCode,
+               CreatedAt = o.CreatedAt,
+               Items = o.Items.Select(i => new orderitemdto
+               {
+                    ProductId = i.ProductId,
+                    ProductName = i.ProductName,
+                    ProductImage = i.ProductImage,
+                    UnitPrice = i.UnitPrice,
+                    Quantity = i.Quantity,
+                    LineTotal = i.UnitPrice * i.Quantity
+               }).ToList()
+          };
+     }
 }

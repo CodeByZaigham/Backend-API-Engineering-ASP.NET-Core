@@ -115,5 +115,16 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
                return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
 
           return response_model<orderresponsedto>.success(ToDto(order), "order loaded");
-     }  
+     }
+     
+     public async Task<response_model<List<orderresponsedto>>> GetAllOrders()
+     {
+          var orders = await _context.Orders
+               .AsNoTracking()
+               .Include(o => o.Items)
+               .OrderByDescending(o => o.CreatedAt)
+               .ToListAsync();
+
+          return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
+     }
 }

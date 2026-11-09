@@ -5,8 +5,18 @@ namespace shopforge_backend.API.controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
+    public class OrdersController(iOrderService orderservice) : ControllerBase
     {
+        // POST api/orders   -> turns the logged-in user's cart into an order
+        [HttpPost]
+        public async Task<IActionResult> PlaceOrder([FromBody] placeorderdto dto)
+        {
+            var userId = User.GetUserId();
+            if (userId is null) return Unauthorized();
+
+            var result = await orderservice.PlaceOrder(userId.Value, dto);
+            return result.ToActionResult();
+        }
         
     }
 }

@@ -1,8 +1,12 @@
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using shopforge_backend.Application.DTO;
+using shopforge_backend.Application.iservices;
+using shopforge_backend.generics;
 
 namespace shopforge_backend.API.controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController(iOrderService orderservice) : ControllerBase
@@ -50,8 +54,14 @@ namespace shopforge_backend.API.controllers
             var result = await orderservice.GetAllOrders();
             return result.ToActionResult();
         }
-        
-    }
 
-    
+        // PATCH api/orders/{id}/status   body: { "status": "Shipped" }
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("{id:guid}/status")]
+        public async Task<IActionResult> UpdateStatus(Guid id, [FromBody] updateorderstatusdto dto)
+        {
+            var result = await orderservice.UpdateStatus(id, dto);
+            return result.ToActionResult();
+        }
+    }
 }

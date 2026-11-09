@@ -29,7 +29,16 @@ namespace shopforge_backend.API.controllers
             return result.ToActionResult();
         }
 
-        
+        // GET api/orders/{id}   -> one of my orders (admins can open any order)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetOrder(Guid id)
+        {
+            var userId = User.GetUserId();
+            if (userId is null) return Unauthorized();
+
+            var result = await orderservice.GetOrder(userId.Value, id, User.IsInRole("Admin"));
+            return result.ToActionResult();
+        }
         
     }
 

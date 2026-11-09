@@ -39,6 +39,17 @@ namespace shopforge_backend.API.controllers
             var result = await orderservice.GetOrder(userId.Value, id, User.IsInRole("Admin"));
             return result.ToActionResult();
         }
+
+        // ---------- admin ----------
+
+        // GET api/orders/all
+        [Authorize(Roles = "Admin")]
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var result = await orderservice.GetAllOrders();
+            return result.ToActionResult();
+        }
         
     }
 

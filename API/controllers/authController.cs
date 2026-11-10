@@ -15,34 +15,20 @@ namespace shopforge_backend.controllers
         {
             _authservice=authservice;
         }
+        // POST api/auth/Login   body: { "email": "...", "password": "..." }
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody]userdto dto)
+        public async Task<IActionResult> Login([FromBody] logindto dto)
         {
-            try
-            {
-                var Result=await _authservice.LoginUser(dto);
-                if (Result.Item1 == 0)
-                {
-                    return BadRequest(
-                        response_model<tokendto>.fail(Result.Item2,Result.Item2.message)
-                    );
-                }
-                if (Result.Item1 == 1 || Result.Item1 == 4)
-                {
-                    return NotFound(
-                        response_model<tokendto>.fail(Result.Item2,Result.Item2.message)
-                    );
-                }
+            var result = await _authservice.LoginUser(dto);
 
-                return Ok(
-                    response_model<tokendto>.success(Result.Item2,Result.Item2.message)
-                );
+            if (result.Item1 == 0)
+                return BadRequest(response_model<tokendto>.fail(result.Item2, result.Item2.message));
 
-            }
-            catch (System.Exception)
-            {
-                throw;
-            } 
+            // unknown email or wrong password -> 401
+            if (result.Item1 == 1 || result.Item1 == 4)
+                return Unauthorized(response_model<tokendto>.fail(result.Item2, result.Item2.message));
+
+            return Ok(response_model<tokendto>.success(result.Item2, result.Item2.message));
         }
 
         [HttpPost("RegisterUser")]

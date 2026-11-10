@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using shopforge_backend.generics;
 using shopforge_backend.Application.DTO;
 using shopforge_backend.Application.iservices;
-using shopforge_backend.models;
+using shopforge_backend.Domain.models;
 
 namespace shopforge_backend.controllers
 {

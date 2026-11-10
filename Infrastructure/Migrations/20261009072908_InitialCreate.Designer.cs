@@ -9,7 +9,7 @@ using shopforge_backend.Infrastructure.config;
 
 #nullable disable
 
-namespace shopforge_backend.Infrastructure.Migrationss
+namespace shopforge_backend.Infrastructure.Migrations
 {
     [DbContext(typeof(appdbcontext))]
     [Migration("20261009072908_InitialCreate")]

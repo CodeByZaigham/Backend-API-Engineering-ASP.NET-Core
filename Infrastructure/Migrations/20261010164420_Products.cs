@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace shopforge_backend.Migrations
+namespace shopforge_backend.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Products : Migration

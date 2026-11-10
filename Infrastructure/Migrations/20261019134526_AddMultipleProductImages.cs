@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace shopforge_backend.Migrations
+namespace shopforge_backend.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddMultipleProductImages : Migration

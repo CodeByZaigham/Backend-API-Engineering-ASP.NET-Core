@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using shopforge_backend.config;
+using shopforge_backend.Infrastructure.config;
 
 #nullable disable
 
-namespace shopforge_backend.Migrations
+namespace shopforge_backend.Infrastructure.Migrationss
 {
     [DbContext(typeof(appdbcontext))]
     [Migration("20261009072908_InitialCreate")]

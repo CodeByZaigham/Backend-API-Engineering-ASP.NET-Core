@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using shopforge_backend.generics;
 using shopforge_backend.Application.DTO;
 using shopforge_backend.Application.iservices;
+using Microsoft.AspNetCore.Authorization;
 
 namespace shopforge_backend.controllers
 {
@@ -36,7 +37,7 @@ namespace shopforge_backend.controllers
         [HttpPost("RegisterUser")]
         public async Task<IActionResult> Register([FromBody] registerdto dto)
         {
-            var result = await authservice.RegisterUser(dto);
+            var result = await _authservice.RegisterUser(dto);
 
             if (result.Item1 == 0)
                 return BadRequest(response_model<string>.fail(null, result.Item2));
@@ -44,5 +45,21 @@ namespace shopforge_backend.controllers
             return Ok(response_model<string>.success(null, result.Item2));
         }
 
+        // GET api/auth/me   (needs the Bearer token)
+        // The navbar uses this to show the logged-in user's name.
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            var userId = User.GetUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var user = await _authservice.GetUserById(userId.Value);
+            if (user == null)
+                return NotFound(response_model<userdto>.fail(null, "user not found"));
+
+            return Ok(response_model<userdto>.success(user, "ok"));
+        }
     }
 }

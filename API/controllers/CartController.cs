@@ -36,5 +36,16 @@ namespace shopforge_backend.API.controllers
             var result = await cartservice.AddItem(userId.Value, dto, couponCode);
             return result.ToActionResult();
         }
+
+        // PUT api/cart/items/{productId}   body: { "quantity": 3 }
+        [HttpPut("items/{productId:guid}")]
+        public async Task<IActionResult> UpdateItem(Guid productId, [FromBody] updatecartitemdto dto, [FromQuery] string? couponCode)
+        {
+            var userId = User.GetUserId();
+            if (userId is null) return Unauthorized();
+
+            var result = await cartservice.UpdateItem(userId.Value, productId, dto, couponCode);
+            return result.ToActionResult();
+        }
     }
 }

@@ -31,26 +31,18 @@ namespace shopforge_backend.controllers
             return Ok(response_model<tokendto>.success(result.Item2, result.Item2.message));
         }
 
+        // POST api/auth/RegisterUser
+        // body: { firstName, lastName, email, password, confirmPassword }
         [HttpPost("RegisterUser")]
-        public async Task<IActionResult> Register([FromBody]userdto dto)
+        public async Task<IActionResult> Register([FromBody] registerdto dto)
         {
-            try
-            {
-                var Result=await _authservice.RegisterUser(dto);
-                if (Result.Item1 == 0)
-                {
-                    return BadRequest(
-                        response_model<string>.fail(null,Result.Item2)
-                    );
-                }
-                return Ok(
-                    response_model<string>.success(null,Result.Item2)
-                );
-            }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            var result = await authservice.RegisterUser(dto);
+
+            if (result.Item1 == 0)
+                return BadRequest(response_model<string>.fail(null, result.Item2));
+
+            return Ok(response_model<string>.success(null, result.Item2));
         }
+
     }
 }

@@ -13,11 +13,17 @@ namespace shopforge_backend.controllers
     [ApiController]
     public class ProductsController(iProductsService productservice) : ControllerBase
     {
+        // GET api/Products/GetProducts
+        // Optional filters: ?category=shoes&search=leather&maxPrice=150&sort=price-low&isOffer=true
+        // category can be: all | shoes | shirts | pants | offers
+        // sort can be: featured | price-low | price-high | rating
         [HttpGet("GetProducts")]
-        public async Task<IActionResult> get_all_products()
+        public async Task<IActionResult> get_all_products([FromQuery] productqueryparams query)
         {
-            var products = await productservice.Getallproducts();
-            var message = products.Item2.Any() ? "products found!" : "no products yet";
+            var products = await productservice.Getallproducts(query);
+
+            // An empty list is a normal answer, not an error
+            var message = products.Item2.Any() ? "products found!" : "no products found";
             return Ok(response_model<List<productdto>>.success(products.Item2, message));
         }
 

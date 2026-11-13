@@ -33,28 +33,21 @@ namespace shopforge_backend.controllers
             var product = await productservice.GetProductById(id);
 
             if (product == null)
-                return NotFound(response_model<Product>.fail(null,"product exists."));
+                return NotFound(response_model<productdto>.fail(null, "product not found."));
 
-            return Ok(response_model<Product>.success(product,"product exists."));
-        } // one commit
+            return Ok(response_model<productdto>.success(product, "product found."));
+        }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPost("AddProduct")]
         public async Task<IActionResult> AddProducts(productdto dto)
         {
-            try
+            var addedproduct = await productservice.addproducts(dto);
+            if (addedproduct.Item1 == 0)
             {
-                var addedproduct = await productservice.addproducts(dto);
-                if(addedproduct.Item1 == 0)
-                {
-                    return Ok(response_model<string>.success(addedproduct.Item2 , "quantity updated of given product!"));  
-                }
-                return Ok(response_model<string>.success(addedproduct.Item2 , "product added successfully!"));  
+                return Ok(response_model<string>.success(addedproduct.Item2, "quantity updated of given product!"));
             }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            return Ok(response_model<string>.success(addedproduct.Item2, "product added successfully!"));
         }
 
         [Authorize(Roles = "admin")]

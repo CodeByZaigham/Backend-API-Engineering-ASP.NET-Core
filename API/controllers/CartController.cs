@@ -58,5 +58,16 @@ namespace shopforge_backend.API.controllers
             var result = await cartservice.RemoveItem(userId.Value, productId, couponCode);
             return result.ToActionResult();
         }
+
+        // DELETE api/cart   (empties the whole cart)
+        [HttpDelete]
+        public async Task<IActionResult> Clear()
+        {
+            var userId = User.GetUserId();
+            if (userId is null) return Unauthorized();
+
+            var result = await cartservice.Clear(userId.Value);
+            return result.ToActionResult();
+        }
     }
 }

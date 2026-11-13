@@ -50,23 +50,16 @@ namespace shopforge_backend.controllers
             return Ok(response_model<string>.success(addedproduct.Item2, "product added successfully!"));
         }
 
-        [Authorize(Roles = "admin")]
+         [Authorize(Roles = "Admin")]
         [HttpPatch("UpdateProduct")]
         public async Task<IActionResult> UpdateProduct(productdto dto)
         {
-            try
+            var updatedproduct = await productservice.UpdateProduct(dto);
+            if (updatedproduct.Item1 == 1)
             {
-                var updatedproduct = await productservice.UpdateProduct(dto);
-                if (updatedproduct.Item1 == 1)
-                {
-                    return Ok(response_model<string>.success(updatedproduct.Item2 , "Product details Updated!"));  
-                }
-                return BadRequest();
+                return Ok(response_model<string>.success(updatedproduct.Item2, "Product details Updated!"));
             }
-            catch (System.Exception)
-            {
-                throw;
-            }
+            return NotFound(response_model<string>.fail(null, updatedproduct.Item2));
         }
         
         [Authorize(Roles = "admin")]

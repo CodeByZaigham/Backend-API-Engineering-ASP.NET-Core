@@ -47,6 +47,50 @@ namespace shopforge_backend.Infrastructure.Migrations
                     b.ToTable("Cart");
                 });
 
+            modelBuilder.Entity("shopforge_backend.Domain.models.Coupon", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("DiscountPercent")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Coupons");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                            Code = "SHOPFORGE25",
+                            DiscountPercent = 25,
+                            IsActive = true
+                        },
+                        new
+                        {
+                            Id = new Guid("22222222-2222-2222-2222-222222222222"),
+                            Code = "SHOPFORGE40",
+                            DiscountPercent = 40,
+                            IsActive = true
+                        });
+                });
+
             modelBuilder.Entity("shopforge_backend.Domain.models.Order", b =>
                 {
                     b.Property<Guid>("Id")

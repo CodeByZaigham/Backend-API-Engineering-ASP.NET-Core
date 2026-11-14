@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Microsoft.OpenApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,12 +8,13 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using shopforge_backend.Infrastructure.config;
 using shopforge_backend.Application.iservices;
-using shopforge_backend.services;
 using shopforge_backend.Application.services;
+using Microsoft.AspNetCore.Mvc;
+using shopforge_backend.generics;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// dependency injections
 // Swagger configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -37,7 +39,10 @@ builder.Services.AddSwaggerGen(options =>
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-builder.Services.AddDbContext<appdbcontext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
+
+// FIX: name now matches the README ("DefaultConnection")
+builder.Services.AddDbContext<appdbcontext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddAuthentication(options =>
 {
@@ -58,27 +63,26 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetValue<string>("JWT:Key")))
     };
 });
-builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+// CHANGED: enums (shippingMethod, paymentMethod, status...) travel as text,
+// e.g. "express" / "cod" / "Shipped", which is what the frontend sends.
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
-// added this to allow our frontend access its endpoints without being blocked by browser.
+// NEW: allow the React dev server to call this API
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(
-        "Frontend", policy =>
+    options.AddPolicy("Frontend", policy =>
         policy.WithOrigins("http://localhost:5173")
-        .AllowAnyHeader()
-        .AllowAnyMethod()
-    );
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
-
 
 builder.Services.AddScoped<iauthservice,authservice>();
 builder.Services.AddScoped<iProductsService,ProductsService>();
 builder.Services.AddScoped<iCartService,CartService>();
-builder.Services.AddScoped<iCouponService,CouponService>();
-builder.Services.AddScoped<iOrderService,OrderService>();
+builder.Services.AddScoped<iCouponService,CouponService>();   // NEW
+builder.Services.AddScoped<iOrderService,OrderService>();     // NEW
 
 var app = builder.Build();
 
@@ -90,15 +94,18 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
-//Middlewares
-
 app.UseHttpsRedirection();
 
-app.UseCors("Frontend"); // must come before auth, allowed configured CORS
-
-app.UseRouting();
-
+app.UseCors("Frontend");   // NEW: must come before authentication
 app.UseAuthentication(); //jwt
 app.UseAuthorization(); //swagger , jwt
 app.MapControllers();
+
+//test route
+app.MapGet("/", () =>
+{
+    return Results.Ok("API is working successfully!");
+});
+
+
 app.Run();

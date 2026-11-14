@@ -6,7 +6,7 @@ using shopforge_backend.generics;
 using shopforge_backend.Application.iservices;
 using shopforge_backend.Domain.models;
 
-namespace shopforge_backend.services;
+namespace shopforge_backend.Application.services;
 
 public class CouponService(appdbcontext _context) : iCouponService
 {

@@ -10,7 +10,7 @@ using shopforge_backend.Application.iservices;
 using shopforge_backend.Domain.models;
 using shopforge_backend.Infrastructure.config;
 
-namespace shopforge_backend.services
+namespace shopforge_backend.Application.services
 {
      public class authservice(appdbcontext _context , IConfiguration configuration):iauthservice
      {

@@ -93,70 +93,65 @@ public class OrderService(appdbcontext _context, iCouponService couponService) :
 
      public async Task<response_model<List<orderresponsedto>>> GetMyOrders(Guid userId)
      {
-          // var orders = await _context.Orders
-          //      .AsNoTracking()
-          //      .Include(o => o.Items)
-          //      .Where(o => o.UserId == userId)
-          //      .OrderByDescending(o => o.CreatedAt)
-          //      .ToListAsync();
+          var orders = await _context.Orders
+               .AsNoTracking()
+               .Include(o => o.Items)
+               .Where(o => o.UserId == userId)
+               .OrderByDescending(o => o.CreatedAt)
+               .ToListAsync();
 
-          // return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
-          return null;
+          return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
      }  
 
      public async Task<response_model<orderresponsedto>> GetOrder(Guid userId, Guid orderId, bool isAdmin)
      {
-          // var order = await _context.Orders
-          //      .AsNoTracking()
-          //      .Include(o => o.Items)
-          //      .FirstOrDefaultAsync(o => o.Id == orderId);
+          var order = await _context.Orders
+               .AsNoTracking()
+               .Include(o => o.Items)
+               .FirstOrDefaultAsync(o => o.Id == orderId);
 
           // Same message for "doesn't exist" and "not yours" so ids can't be probed
-          // if (order == null || (!isAdmin && order.UserId != userId))
-          //      return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
+          if (order == null || (!isAdmin && order.UserId != userId))
+               return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
 
-          // return response_model<orderresponsedto>.success(ToDto(order), "order loaded");
-          return null;
+          return response_model<orderresponsedto>.success(ToDto(order), "order loaded");
      }
      
      public async Task<response_model<List<orderresponsedto>>> GetAllOrders()
      {
-          // var orders = await _context.Orders
-          //      .AsNoTracking()
-          //      .Include(o => o.Items)
-          //      .OrderByDescending(o => o.CreatedAt)
-          //      .ToListAsync();
+          var orders = await _context.Orders
+               .AsNoTracking()
+               .Include(o => o.Items)
+               .OrderByDescending(o => o.CreatedAt)
+               .ToListAsync();
 
-          // return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
-          return null;
+          return response_model<List<orderresponsedto>>.success(orders.Select(ToDto).ToList(), "orders loaded");
      }
 
      public async Task<response_model<orderresponsedto>> UpdateStatus(Guid orderId, updateorderstatusdto dto)
      {
-          // var order = await _context.Orders
-          //      .Include(o => o.Items)
-          //      .FirstOrDefaultAsync(o => o.Id == orderId);
+          var order = await _context.Orders
+               .Include(o => o.Items)
+               .FirstOrDefaultAsync(o => o.Id == orderId);
 
-          // if (order == null)
-          //      return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
+          if (order == null)
+               return response_model<orderresponsedto>.fail(null, "Order not found.", 404);
 
-          // order.Status = dto.Status;
-          // await _context.SaveChangesAsync();
+          order.Status = dto.Status;
+          await _context.SaveChangesAsync();
 
-          // return response_model<orderresponsedto>.success(ToDto(order), "order status updated");
-          return null;
+          return response_model<orderresponsedto>.success(ToDto(order), "order status updated");
      }
 
      private async Task<string> GenerateOrderNumber()
      {
-          // for (var attempt = 0; attempt < 5; attempt++)
-          // {
-          //      var number = $"SF-{Random.Shared.Next(100000, 999999)}";
-          //      if (!await _context.Orders.AnyAsync(o => o.OrderNumber == number))
-          //           return number;
-          // }
-          // return $"SF-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
-          return null;
+          for (var attempt = 0; attempt < 5; attempt++)
+          {
+               var number = $"SF-{Random.Shared.Next(100000, 999999)}";
+               if (!await _context.Orders.AnyAsync(o => o.OrderNumber == number))
+                    return number;
+          }
+          return $"SF-{Guid.NewGuid().ToString("N")[..8].ToUpper()}";
      }
 
      private static orderresponsedto ToDto(Order o)

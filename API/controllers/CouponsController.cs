@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using shopforge_backend.Application.DTO;
 using shopforge_backend.Application.iservices;
 
-namespace shopforge_backend.controllers
+namespace shopforge_backend.API.controllers
 {
     [Authorize]
     [Route("api/[controller]")]

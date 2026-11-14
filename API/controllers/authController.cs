@@ -5,7 +5,7 @@ using shopforge_backend.Application.DTO;
 using shopforge_backend.Application.iservices;
 using Microsoft.AspNetCore.Authorization;
 
-namespace shopforge_backend.controllers
+namespace shopforge_backend.API.controllers
 {
     [Route("api/[controller]")]
     [ApiController]

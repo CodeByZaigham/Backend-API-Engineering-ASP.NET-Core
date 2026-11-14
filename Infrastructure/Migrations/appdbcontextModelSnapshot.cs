@@ -22,7 +22,7 @@ namespace shopforge_backend.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("shopforge_backend.models.CartItem", b =>
+            modelBuilder.Entity("shopforge_backend.Domain.models.CartItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -34,9 +34,6 @@ namespace shopforge_backend.Infrastructure.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -44,10 +41,13 @@ namespace shopforge_backend.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
+                    b.HasIndex("UserId", "ProductId")
+                        .IsUnique();
+
                     b.ToTable("Cart");
                 });
 
-            modelBuilder.Entity("shopforge_backend.models.Product", b =>
+            modelBuilder.Entity("shopforge_backend.Domain.models.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,6 +76,9 @@ namespace shopforge_backend.Infrastructure.Migrations
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsOffer")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -83,6 +86,10 @@ namespace shopforge_backend.Infrastructure.Migrations
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Rating")
+                        .HasPrecision(3, 1)
+                        .HasColumnType("decimal(3,1)");
 
                     b.Property<int>("StockQuantity")
                         .HasColumnType("int");
@@ -95,7 +102,7 @@ namespace shopforge_backend.Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("shopforge_backend.models.Users", b =>
+            modelBuilder.Entity("shopforge_backend.Domain.models.Users", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -127,15 +134,23 @@ namespace shopforge_backend.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("shopforge_backend.models.CartItem", b =>
+            modelBuilder.Entity("shopforge_backend.Domain.models.CartItem", b =>
                 {
-                    b.HasOne("shopforge_backend.models.Product", "Product")
+                    b.HasOne("shopforge_backend.Domain.models.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("shopforge_backend.Domain.models.Users", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

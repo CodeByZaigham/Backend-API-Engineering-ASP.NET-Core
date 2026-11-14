@@ -15,7 +15,7 @@ namespace shopforge_backend.Infrastructure.config
         public DbSet<CartItem> Cart { get; set; }
         // public DbSet<Coupon> Coupons { get; set; }
         public DbSet<Order> Orders { get; set; }
-        // public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

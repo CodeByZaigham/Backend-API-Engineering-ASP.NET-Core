@@ -181,7 +181,7 @@ namespace shopforge_backend.Infrastructure.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("OrderItem");
+                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("shopforge_backend.Domain.models.Product", b =>

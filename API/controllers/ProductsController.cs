@@ -50,7 +50,7 @@ namespace shopforge_backend.controllers
             return Ok(response_model<string>.success(addedproduct.Item2, "product added successfully!"));
         }
 
-         [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPatch("UpdateProduct")]
         public async Task<IActionResult> UpdateProduct(productdto dto)
         {
@@ -62,24 +62,16 @@ namespace shopforge_backend.controllers
             return NotFound(response_model<string>.fail(null, updatedproduct.Item2));
         }
         
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("DeleteProduct")]
         public async Task<IActionResult> DeleteProduct(Guid ProductId)
         {
-            try
+            var deletedproduct = await productservice.DeleteProduct(ProductId);
+            if (deletedproduct.Item1 == 0)
             {
-                var deletedproduct = await productservice.DeleteProduct(ProductId);
-                if(deletedproduct.Item1 == 0)
-                {
-                    return NotFound(response_model<string>.fail(deletedproduct.Item2 , "Product not found!"));
-                }
-                return Ok(response_model<string>.success(deletedproduct.Item2 , "Product deleted!"));
+                return NotFound(response_model<string>.fail(deletedproduct.Item2, "Product not found!"));
             }
-            catch (System.Exception)
-            {
-                
-                throw;
-            }
+            return Ok(response_model<string>.success(deletedproduct.Item2, "Product deleted!"));
         }
     }
 }
